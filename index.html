@@ -1,58 +1,424 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Zahnrad Simulation</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zahnrad-Simulation</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+    }
 
-body{
-font-family:Arial;
-background:#f1f5f9;
-margin:0;
-display:flex;
-height:100vh;
-}
+    .app {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: row;
+    }
 
-.sidebar{
-width:320px;
-background:white;
-padding:20px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-overflow:auto;
-}
+    .sidebar {
+      width: 360px;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
+      padding: 24px;
+      overflow-y: auto;
+      z-index: 2;
+    }
 
-.main{
-flex:1;
-display:flex;
-justify-content:center;
-align-items:center;
-}
+    .header {
+      background: #1e293b;
+      color: white;
+      margin: -24px -24px 24px -24px;
+      padding: 24px;
+    }
 
-</style>
+    .header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
 
+    .header p {
+      margin: 8px 0 0 0;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .section {
+      margin-bottom: 28px;
+    }
+
+    .section h2 {
+      margin: 0 0 12px 0;
+      font-size: 17px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      background: #f1f5f9;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-family: monospace;
+      white-space: nowrap;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    .btn-main {
+      background: #dbeafe;
+      color: #1d4ed8;
+      flex: 1;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #334155;
+      flex: 1;
+    }
+
+    .calc-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .calc-box .label {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .calc-box .big {
+      font-size: 24px;
+      font-weight: bold;
+      font-family: monospace;
+    }
+
+    .calc-box .small {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      min-height: 50vh;
+      background-color: #f8fafc;
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 24px 24px;
+      overflow: hidden;
+    }
+
+    .svg-wrap {
+      width: 100%;
+      max-width: 1200px;
+      height: 80vh;
+      max-height: 800px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        flex-direction: column-reverse;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .main {
+        min-height: 55vh;
+      }
+
+      .svg-wrap {
+        height: 55vh;
+      }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="header">
+        <h1>Zahnrad-Simulation</h1>
+        <p>Übersetzungsverhältnis interaktiv erleben</p>
+      </div>
 
-<div class="sidebar">
+      <div class="section">
+        <div class="row">
+          <h2>Modul (m)</h2>
+          <div class="value"><span id="moduleValue">12</span> mm</div>
+        </div>
+        <input type="range" id="module" min="5" max="30" step="1" value="12" />
+      </div>
 
-<h1>Zahnrad Simulation</h1>
+      <div class="section">
+        <div class="row">
+          <h2>Antrieb (Z1)</h2>
+          <div class="value"><span id="z1Value">20</span> Zähne</div>
+        </div>
+        <div style="margin-bottom:8px; color:#64748b; font-size:13px;">
+          Ø <span id="d1Value">240</span> mm
+        </div>
+        <input type="range" id="z1" min="10" max="60" step="1" value="20" />
+      </div>
 
-<p>Übersetzungsverhältnis sichtbar machen</p>
+      <div class="section">
+        <div class="row">
+          <h2>Abtrieb (Z2)</h2>
+          <div class="value"><span id="z2Value">40</span> Zähne</div>
+        </div>
+        <div style="margin-bottom:8px; color:#64748b; font-size:13px;">
+          Ø <span id="d2Value">480</span> mm
+        </div>
+        <input type="range" id="z2" min="10" max="60" step="1" value="40" />
+      </div>
 
-</div>
+      <div class="section">
+        <div class="row">
+          <h2>Motordrehzahl</h2>
+          <div class="value"><span id="rpmValue">20</span> U/min</div>
+        </div>
+        <input type="range" id="rpm" min="5" max="100" step="1" value="20" />
 
-<div class="main">
+        <div class="buttons">
+          <button class="btn-main" id="playPauseBtn">Pause</button>
+          <button class="btn-secondary" id="reverseBtn">Richtung wechseln</button>
+        </div>
+      </div>
 
-<svg width="800" height="400">
+      <div class="section">
+        <div class="calc-box">
+          <div class="label">Übersetzung (i)</div>
+          <div class="big" id="ratioValue">1 : 2.00</div>
+          <div class="small">Formel: Z2 / Z1</div>
+        </div>
 
-<circle cx="200" cy="200" r="100" fill="#e2e8f0" stroke="#334155" stroke-width="4"/>
-<circle cx="500" cy="200" r="200" fill="#fde68a" stroke="#d97706" stroke-width="4"/>
+        <div class="calc-box">
+          <div class="label">Abtriebs-Drehzahl</div>
+          <div class="big" id="rpmOutValue">10.0</div>
+          <div class="small">U/min</div>
+        </div>
 
-</svg>
+        <div class="calc-box">
+          <div class="label">Achsabstand</div>
+          <div class="big"><span id="axisDistanceValue">360.0</span> mm</div>
+          <div class="small">a = (d1 + d2) / 2</div>
+        </div>
 
-</div>
+        <div class="calc-box">
+          <div class="label">Drehrichtung</div>
+          <div class="big" id="directionValue">vorwärts</div>
+          <div class="small">Außenverzahnung: gegenläufig</div>
+        </div>
+      </div>
+    </aside>
 
+    <main class="main">
+      <div class="svg-wrap">
+        <svg id="gearSvg" viewBox="-200 -200 1200 800" preserveAspectRatio="xMidYMid meet">
+          <line id="axisLine" x1="0" y1="0" x2="360" y2="0" stroke="#94a3b8" stroke-width="3" stroke-dasharray="8,8"></line>
+
+          <g id="gear1Group">
+            <circle id="gear1" cx="0" cy="0" r="120" fill="#e2e8f0" stroke="#475569" stroke-width="4"></circle>
+            <line id="gear1LineV" x1="0" y1="-120" x2="0" y2="120" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,6"></line>
+            <line id="gear1LineH" x1="-120" y1="0" x2="120" y2="0" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,6"></line>
+            <circle cx="0" cy="0" r="10" fill="#0f172a" stroke="#cbd5e1" stroke-width="2"></circle>
+          </g>
+
+          <g id="gear2Wrapper" transform="translate(360, 0)">
+            <g id="gear2Group">
+              <circle id="gear2" cx="0" cy="0" r="240" fill="#fef3c7" stroke="#d97706" stroke-width="4"></circle>
+              <line id="gear2LineV" x1="0" y1="-240" x2="0" y2="240" stroke="#fcd34d" stroke-width="2" stroke-dasharray="6,6"></line>
+              <line id="gear2LineH" x1="-240" y1="0" x2="240" y2="0" stroke="#fcd34d" stroke-width="2" stroke-dasharray="6,6"></line>
+              <circle cx="0" cy="0" r="10" fill="#0f172a" stroke="#cbd5e1" stroke-width="2"></circle>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const z1Input = document.getElementById("z1");
+    const z2Input = document.getElementById("z2");
+    const moduleInput = document.getElementById("module");
+    const rpmInput = document.getElementById("rpm");
+
+    const z1Value = document.getElementById("z1Value");
+    const z2Value = document.getElementById("z2Value");
+    const moduleValue = document.getElementById("moduleValue");
+    const rpmValue = document.getElementById("rpmValue");
+    const d1Value = document.getElementById("d1Value");
+    const d2Value = document.getElementById("d2Value");
+    const ratioValue = document.getElementById("ratioValue");
+    const rpmOutValue = document.getElementById("rpmOutValue");
+    const axisDistanceValue = document.getElementById("axisDistanceValue");
+    const directionValue = document.getElementById("directionValue");
+
+    const gearSvg = document.getElementById("gearSvg");
+    const axisLine = document.getElementById("axisLine");
+
+    const gear1 = document.getElementById("gear1");
+    const gear2 = document.getElementById("gear2");
+
+    const gear1Group = document.getElementById("gear1Group");
+    const gear2Group = document.getElementById("gear2Group");
+    const gear2Wrapper = document.getElementById("gear2Wrapper");
+
+    const gear1LineV = document.getElementById("gear1LineV");
+    const gear1LineH = document.getElementById("gear1LineH");
+    const gear2LineV = document.getElementById("gear2LineV");
+    const gear2LineH = document.getElementById("gear2LineH");
+
+    const playPauseBtn = document.getElementById("playPauseBtn");
+    const reverseBtn = document.getElementById("reverseBtn");
+
+    let playing = true;
+    let direction = 1;
+    let angle = 0;
+    let lastTime = performance.now();
+
+    function updateStaticValues() {
+      const z1 = parseInt(z1Input.value, 10);
+      const z2 = parseInt(z2Input.value, 10);
+      const moduleSize = parseInt(moduleInput.value, 10);
+      const rpm = parseInt(rpmInput.value, 10);
+
+      const d1 = z1 * moduleSize;
+      const d2 = z2 * moduleSize;
+      const r1 = d1 / 2;
+      const r2 = d2 / 2;
+      const axisDistance = r1 + r2;
+      const ratio = z2 / z1;
+      const rpmOut = rpm / ratio;
+
+      z1Value.textContent = z1;
+      z2Value.textContent = z2;
+      moduleValue.textContent = moduleSize;
+      rpmValue.textContent = rpm;
+
+      d1Value.textContent = d1;
+      d2Value.textContent = d2;
+      ratioValue.textContent = `1 : ${ratio.toFixed(2)}`;
+      rpmOutValue.textContent = rpmOut.toFixed(1);
+      axisDistanceValue.textContent = axisDistance.toFixed(1);
+      directionValue.textContent = direction === 1 ? "vorwärts" : "rückwärts";
+
+      gear1.setAttribute("r", r1);
+      gear2.setAttribute("r", r2);
+
+      gear1LineV.setAttribute("y1", -r1);
+      gear1LineV.setAttribute("y2", r1);
+      gear1LineH.setAttribute("x1", -r1);
+      gear1LineH.setAttribute("x2", r1);
+
+      gear2LineV.setAttribute("y1", -r2);
+      gear2LineV.setAttribute("y2", r2);
+      gear2LineH.setAttribute("x1", -r2);
+      gear2LineH.setAttribute("x2", r2);
+
+      axisLine.setAttribute("x2", axisDistance);
+      gear2Wrapper.setAttribute("transform", `translate(${axisDistance}, 0)`);
+
+      const padding = moduleSize * 6;
+      const minX = -r1 - padding;
+      const minY = -Math.max(r1, r2) - padding;
+      const width = r1 * 2 + r2 * 2 + padding * 2;
+      const height = Math.max(r1, r2) * 2 + padding * 2;
+
+      gearSvg.setAttribute("viewBox", `${minX} ${minY} ${width} ${height}`);
+    }
+
+    function animate(time) {
+      const delta = time - lastTime;
+      lastTime = time;
+
+      const z1 = parseInt(z1Input.value, 10);
+      const z2 = parseInt(z2Input.value, 10);
+      const rpm = parseInt(rpmInput.value, 10);
+
+      if (playing) {
+        const degreesPerSecond = (rpm * direction * 360) / 60;
+        angle += degreesPerSecond * (delta / 1000);
+      }
+
+      const angle2 = -angle * (z1 / z2);
+
+      gear1Group.setAttribute("transform", `rotate(${angle})`);
+      gear2Group.setAttribute("transform", `rotate(${angle2})`);
+
+      requestAnimationFrame(animate);
+    }
+
+    z1Input.addEventListener("input", updateStaticValues);
+    z2Input.addEventListener("input", updateStaticValues);
+    moduleInput.addEventListener("input", updateStaticValues);
+    rpmInput.addEventListener("input", updateStaticValues);
+
+    playPauseBtn.addEventListener("click", () => {
+      playing = !playing;
+      playPauseBtn.textContent = playing ? "Pause" : "Start";
+    });
+
+    reverseBtn.addEventListener("click", () => {
+      direction *= -1;
+      updateStaticValues();
+    });
+
+    updateStaticValues();
+    requestAnimationFrame(animate);
+  </script>
 </body>
 </html>
