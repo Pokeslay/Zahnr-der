@@ -421,7 +421,7 @@
       const rpmIn = parseFloat(rpmInput.value);
 
       if (playing) {
-        const degreesPerSecond = (rpmIn * direction * 360) / 60;
+        const degreesPerSecond = (rpmIn * direction * 360) / 60/10;
         angle += degreesPerSecond * (delta / 1000);
       }
 
